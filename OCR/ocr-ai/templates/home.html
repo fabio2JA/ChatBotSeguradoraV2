@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR</title>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/home-style.css' %}">
+</head>
+<body>
+    <main>
+        <h1>Sistema...</h1>
+        <section>
+            <header>
+                <h2>Administração</h2>
+            </header>
+            <div>
+                <a href="{% url 'admin:index' %}">Painel de controle</a>
+                <p>Ver, Alterar, Excluir</p>
+                <p>CNHS e Documentos</p>
+            </div>
+        </section>
+        <section>
+            <header>
+                <h2>Reconhecimento de documento</h2>
+            </header>
+            <div>
+                <a href="{% url 'reconhecimento_cnh_view' %}">CNH</a>
+                <p>Reconhecimento por foto das informaçoes da cnh</p>
+            </div>
+            <div>
+                <a href="{% url 'reconhecimento_doc_view' %}">Documento do Carro</a>
+                <p>Reconhecimento por foto das informaçoes da cnh</p>
+            </div>
+
+        </section>
+    </main>
+</body>
+</html>

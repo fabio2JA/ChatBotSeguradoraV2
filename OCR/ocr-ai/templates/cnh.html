@@ -1,0 +1,132 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR - CNH</title>
+
+    <link rel="stylesheet" href="{% static 'styles/cnh-style.css' %}">
+</head>
+<body>
+    <main>
+        <section>
+            <a href="{% url 'home_view' %}">Pagina Principal</a>
+        </section>
+        <section class='reconhecimento--div'>
+            <h1>Reconhecimento de CNH</h1>
+            <form method="post" action="{% url 'reconhecimento_cnh_view' %}"
+                enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="image"/>
+                <input type="submit" value="Escanear">
+            </form>
+            {% if uuid %}
+                <section>
+                    <div id='status-image'>
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin: auto; display: block; shape-rendering: auto;" width="244px" height="244px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+                            <g transform="translate(28.666666666666664,28.666666666666664)">
+                              <rect x="-14" y="-14" width="28" height="28" fill="#17232d">
+                                <animateTransform attributeName="transform" type="scale" repeatCount="indefinite" dur="1.8518518518518516s" keyTimes="0;1" values="1.35;1" begin="-0.5555555555555555s"></animateTransform>
+                              </rect>
+                            </g>
+                            <g transform="translate(71.33333333333333,28.666666666666664)">
+                              <rect x="-14" y="-14" width="28" height="28" fill="#343f52">
+                                <animateTransform attributeName="transform" type="scale" repeatCount="indefinite" dur="1.8518518518518516s" keyTimes="0;1" values="1.35;1" begin="-0.37037037037037035s"></animateTransform>
+                              </rect>
+                            </g>
+                            <g transform="translate(28.666666666666664,71.33333333333333)">
+                              <rect x="-14" y="-14" width="28" height="28" fill="#595d7a">
+                                <animateTransform attributeName="transform" type="scale" repeatCount="indefinite" dur="1.8518518518518516s" keyTimes="0;1" values="1.35;1" begin="0s"></animateTransform>
+                              </rect>
+                            </g>
+                            <g transform="translate(71.33333333333333,71.33333333333333)">
+                              <rect x="-14" y="-14" width="28" height="28" fill="#867aa2">
+                                <animateTransform attributeName="transform" type="scale" repeatCount="indefinite" dur="1.8518518518518516s" keyTimes="0;1" values="1.35;1" begin="-0.18518518518518517s"></animateTransform>
+                              </rect>
+                            </g>
+                        </svg>
+                    </div>
+                    <p id="result-div">Processando Imagem....</p>
+                    <input type="hidden" id="uuid" value="{{ uuid }}">
+                    <input type="hidden" id="uuid-url" value="{% url 'verify_ocr_status_view' %}">
+                </section>
+            {% endif %}
+        </section>
+    </main>
+
+    {% if uuid %}
+    <script>
+        let intervalId;
+
+        const uuidStatus = {
+            'SC': 'Imagem Reconhecida',
+            'FL': 'Erro no Reconhecimento de imagem',
+            'FN': 'Reconhecimento Finalizado'
+        };
+        const uuidImages = {
+            'SC': `<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+            width="40" height="40"
+            viewBox="0 0 40 40">
+            <path fill="#bae0bd" d="M20,38.5C9.8,38.5,1.5,30.2,1.5,20S9.8,1.5,20,1.5S38.5,9.8,38.5,20S30.2,38.5,20,38.5z"></path><path fill="#5e9c76" d="M20,2c9.9,0,18,8.1,18,18s-8.1,18-18,18S2,29.9,2,20S10.1,2,20,2 M20,1C9.5,1,1,9.5,1,20s8.5,19,19,19	s19-8.5,19-19S30.5,1,20,1L20,1z"></path><path fill="none" stroke="#fff" stroke-miterlimit="10" stroke-width="3" d="M11.2,20.1l5.8,5.8l13.2-13.2"></path>
+            </svg>`,
+            'FL': `<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+            width="40" height="40"
+            viewBox="0 0 40 40">
+            <path fill="#f78f8f" d="M21 24.15L8.857 36.293 4.707 32.143 16.85 20 4.707 7.857 8.857 3.707 21 15.85 33.143 3.707 37.293 7.857 25.15 20 37.293 32.143 33.143 36.293z"></path><path fill="#c74343" d="M33.143,4.414l3.443,3.443L25.15,19.293L24.443,20l0.707,0.707l11.436,11.436l-3.443,3.443 L21.707,24.15L21,23.443l-0.707,0.707L8.857,35.586l-3.443-3.443L16.85,20.707L17.557,20l-0.707-0.707L5.414,7.857l3.443-3.443 L20.293,15.85L21,16.557l0.707-0.707L33.143,4.414 M33.143,3L21,15.143L8.857,3L4,7.857L16.143,20L4,32.143L8.857,37L21,24.857 L33.143,37L38,32.143L25.857,20L38,7.857L33.143,3L33.143,3z"></path>
+            </svg>`,
+            'FN': `<svg fill="#000000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+            width="800px" height="800px" viewBox="0 0 47 47" xml:space="preserve">
+            <g><g id="Layer_1_22_"><g><path d="M6.12,38.52V5.136h26.962v28.037l5.137-4.243V2.568C38.219,1.15,37.07,0,35.652,0h-32.1C2.134,0,0.985,1.15,0.985,2.568
+                v38.519c0,1.418,1.149,2.568,2.567,2.568h22.408L22.33,38.52H6.12z"/>
+            <path d="M45.613,27.609c-0.473-0.446-1.2-0.467-1.698-0.057l-11.778,9.734l-7.849-4.709c-0.521-0.312-1.188-0.219-1.603,0.229
+                c-0.412,0.444-0.457,1.117-0.106,1.613l8.506,12.037c0.238,0.337,0.625,0.539,1.037,0.543c0.004,0,0.008,0,0.012,0
+                c0.408,0,0.793-0.193,1.035-0.525l12.6-17.173C46.149,28.78,46.084,28.055,45.613,27.609z"/>
+            <path d="M27.306,8.988H11.897c-1.418,0-2.567,1.15-2.567,2.568s1.149,2.568,2.567,2.568h15.408c1.418,0,2.566-1.15,2.566-2.568
+                S28.724,8.988,27.306,8.988z"/>
+            <path d="M27.306,16.691H11.897c-1.418,0-2.567,1.15-2.567,2.568s1.149,2.568,2.567,2.568h15.408c1.418,0,2.566-1.149,2.566-2.568
+                C29.874,17.841,28.724,16.691,27.306,16.691z"/>
+            <path d="M27.306,24.395H11.897c-1.418,0-2.567,1.15-2.567,2.568s1.149,2.568,2.567,2.568h15.408c1.418,0,2.566-1.15,2.566-2.568
+                C29.874,25.545,28.724,24.395,27.306,24.395z"/></g></g></g></svg>`
+        };
+
+        function startPeriodicRequest() {
+            clearInterval(intervalId)
+            var uuid = document.getElementById('uuid').value;
+
+            intervalId = setInterval(() => {
+                makeRequest(uuid);
+            }, 2000);
+        }
+
+
+        function makeRequest(uuid) {
+            let xhr = new XMLHttpRequest();
+
+            xhr.open('POST', document.getElementById('uuid-url').value);
+
+            xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.set
+
+            xhr.onload = () => {
+                if (xhr.responseText in uuidStatus) {
+                    clearInterval(intervalId)
+                    document.getElementById('result-div').innerHTML = uuidStatus[xhr.responseText];
+                    document.getElementById('status-image').innerHTML = uuidImages[xhr.responseText];
+                }
+            };
+            xhr.onerror = () => {
+                document.getElementById('result-div').innerHTML = 'Erro ao conseguir status do reconhecimento de imagem'
+            };
+
+            xhr.send('uuid=' + encodeURIComponent(uuid));
+        }
+
+        startPeriodicRequest()
+    </script>
+    {% endif %}
+</body>
+</html>
