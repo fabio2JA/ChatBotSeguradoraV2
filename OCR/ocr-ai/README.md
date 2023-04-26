@@ -25,28 +25,28 @@
 ## Como usar;
 
 #### Depois de iniciar o sistema para porta 8000
-![](https://github.com/fabio2JA/ChatBotSeguradoraV1/blob/main/images/Screenshot_15.png)
+![](https://github.com/fabio2JA/ChatBotSeguradoraV1/blob/main/OCR/ocr-ai/imagens/Screenshot_15.png)
 
 #### Escolha entre reconhecer uma cnh ou um documento de carro
-![](https://github.com/fabio2JA/ChatBotSeguradoraV1/blob/main/images/Screenshot_16.png)
+![](https://github.com/fabio2JA/ChatBotSeguradoraV1/blob/main/OCR/ocr-ai/imagens/Screenshot_16.png)
 
 #### Faça o upload da imagem e clique em reconhecer imagem
-![](https://github.com/fabio2JA/ChatBotSeguradoraV1/blob/main/images/Screenshot_17.png)
+![](https://github.com/fabio2JA/ChatBotSeguradoraV1/blob/main/OCR/ocr-ai/imagens/Screenshot_17.png)
 
 #### Aguarde ate a finalizacao do reconhecimento
-![](https://github.com/fabio2JA/ChatBotSeguradoraV1/blob/main/images/Screenshot_18.png)
+![](https://github.com/fabio2JA/ChatBotSeguradoraV1/blob/main/OCR/ocr-ai/imagens/Screenshot_18.png)
 
 #### Se o reconhecimento foi bem sucedido volte a pagina principal, se não tente usar outra imagem
-![](https://github.com/fabio2JA/ChatBotSeguradoraV1/blob/main/images/Screenshot_19.png)
+![](https://github.com/fabio2JA/ChatBotSeguradoraV1/blob/main/OCR/ocr-ai/imagens/Screenshot_19.png)
 
 #### Abra o dashboard do admin
-![](https://github.com/fabio2JA/ChatBotSeguradoraV1/blob/main/images/Screenshot_20.png)
+![](https://github.com/fabio2JA/ChatBotSeguradoraV1/blob/main/OCR/ocr-ai/imagens/Screenshot_20.png)
 
 #### Navege ate motoristas e Escolha o tipo que você selecinou para o reconhecimento
-![](https://github.com/fabio2JA/ChatBotSeguradoraV1/blob/main/images/Screenshot_21.png)
+![](https://github.com/fabio2JA/ChatBotSeguradoraV1/blob/main/OCR/ocr-ai/imagens/Screenshot_21.png)
 
 #### Ira aparecer uma lista de documentos, clique no seu documento
-![](https://github.com/fabio2JA/ChatBotSeguradoraV1/blob/main/images/Screenshot_22.png)
+![](https://github.com/fabio2JA/ChatBotSeguradoraV1/blob/main/OCR/ocr-ai/imagens/Screenshot_22.png)
 
 #### Aqui voce editar e deletar um documento
-![](https://github.com/fabio2JA/ChatBotSeguradoraV1/blob/main/images/Screenshot_23.png)
+![](https://github.com/fabio2JA/ChatBotSeguradoraV1/blob/main/OCR/ocr-ai/imagens/Screenshot_23.png)
