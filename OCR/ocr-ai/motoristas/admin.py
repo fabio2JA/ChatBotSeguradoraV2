@@ -13,7 +13,3 @@ class DOCCarroAdmin(admin.ModelAdmin):
         'modelo', 'tipo', 'data', 'local'                
     ]
 admin.site.register(DOCCarro, DOCCarroAdmin)
-
-admin.site.register(OCRQueue)
-
-admin.site.register(DoneOCRQueue)

@@ -1,11 +1,15 @@
+import time
 import cv2
 import threading
+
+import requests
+import json
 
 from django.utils import timezone
 
 from motoristas.handlers.cnh import CNHHandler
 from motoristas.handlers.image import ImageHandler
-from motoristas.handlers.ocr.ocr import OCRRecognitor
+# from motoristas.handlers.ocr.ocr import OCRRecognitor
 from motoristas.models import CNH, DOCCarro, DoneOCRQueue, OCRQueue
 
 
@@ -20,22 +24,41 @@ def verify_has_queue():
         thread.start()
 
 def do_queue(queue: OCRQueue):
-    done_ocr = DoneOCRQueue.objects.create(uuid=queue.pk, status='FL')
+    # DELETAR
+    time.sleep(15)
+
+    done_ocr = DoneOCRQueue.objects.create(
+        uuid=queue.pk, 
+        status='FL', 
+        number=queue.number
+    )
+
+    #  DELETAR
+    queue.image.delete()
+    queue.original_image.delete()
+    queue.delete()
+
+    done_ocr.date_time = timezone.now()
+    done_ocr.save()
+
+    send_status_ocr(done_ocr.status, done_ocr.number)
+
+    verify_has_queue()
     
-    try:
-        extracted_infos = do_ocr(queue)
-        save_ocr_on_db(extracted_infos, queue.image_type, done_ocr)
-    except Exception as e:
-        pass
-    finally:
-        queue.image.delete()
-        queue.original_image.delete()
-        queue.delete()
+    # try:
+    #     extracted_infos = do_ocr(queue)
+    #     save_ocr_on_db(extracted_infos, queue.image_type, done_ocr)
+    # except Exception as e:
+    #     pass
+    # finally:
+    #     queue.image.delete()
+    #     queue.original_image.delete()
+    #     queue.delete()
 
-        done_ocr.date_time = timezone.now()
-        done_ocr.save()
+    #     done_ocr.date_time = timezone.now()
+    #     done_ocr.save()
 
-        verify_has_queue()
+    #     verify_has_queue()
 
 
 def do_ocr(queue: OCRQueue) -> dict:
@@ -81,16 +104,17 @@ def do_ocr(queue: OCRQueue) -> dict:
 
     extracted_info = {'': ''}
     try:
-        ocr = OCRRecognitor(
-            image_to_extract,
-            fields_to_extract_regex,
-            []
-        )
-        extracted_info = ocr.recognize(fields_to_extract_extration)
+        # ocr = OCRRecognitor(
+        #     image_to_extract,
+        #     fields_to_extract_regex,
+        #     []
+        # )
+        # extracted_info = ocr.recognize(fields_to_extract_extration)
+        print('o')
     except Exception:
         raise ValueError('ERRO AO RECONHECER A IMAGEM')
     else:
-        extracted_info['image'] = queue.original_image
+        # extracted_info['image'] = queue.original_image
         return extracted_info
     
     
@@ -104,3 +128,22 @@ def save_ocr_on_db(extracted_info: dict, image_type: str, done_ocr: DoneOCRQueue
         doc.save()
     done_ocr.status = 'SC'
     done_ocr.save()
+
+
+def send_status_ocr(status: str, number: str):
+    url = 'http://localhost:3000/status/'
+
+    data = {
+        'status': status,
+        'number': number
+    }
+
+    headers = {
+        'Content-Type': 'application/json',
+        'mode': 'cors'
+    }
+
+    try:
+        requests.post(url, data=json.dumps(data), headers=headers, timeout=10)
+    except Exception:
+        pass

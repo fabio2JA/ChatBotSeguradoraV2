@@ -13,11 +13,11 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = [
     'https://f-jackson-cuddly-zebra-4p9v5vjvw6q3g4x-8000.preview.app.github.dev',
-    'http://localhost:8000'
+    'http://localhost:8000',
+    'http://127.0.0.1:8000'
 ]
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
-
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 INSTALLED_APPS = [
     'django.contrib.admin',

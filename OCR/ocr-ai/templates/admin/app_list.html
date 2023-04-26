@@ -1,0 +1,129 @@
+{% load i18n %}
+
+{% if app_list %}
+  {% for app in app_list %}
+  {% if app.name != "Autenticação e Autorização" %}
+    <div class="app-{{ app.app_label }} module{% if app.app_url in request.path|urlencode %} current-app{% endif %}">
+      <table>
+        {% comment %} <caption>
+          <a href="{{ app.app_url }}" class="section" title="{% blocktranslate with name=app.name %}Models in the {{ name }} application{% endblocktranslate %}">{{ app.name }}</a>
+        </caption> {% endcomment %}
+        {% for model in app.models %}
+          <tr class="model-{{ model.object_name|lower }}{% if model.admin_url in request.path|urlencode %} current-model{% endif %}">
+            {% if model.admin_url %}
+              <th scope="row"><a href="{{ model.admin_url }}"{% if model.admin_url in request.path|urlencode %} aria-current="page"{% endif %}>{{ model.name }}</a></th>
+            {% else %}
+              <th scope="row">{{ model.name }}</th>
+            {% endif %}
+
+            {% if model.add_url %}
+              <td><a href="{{ model.add_url }}" class="addlink">{% translate 'Add' %}</a></td>
+            {% else %}
+              <td></td>
+            {% endif %}
+
+            {% if model.admin_url and show_changelinks %}
+              {% comment %} {% if model.view_only %}
+                <td><a href="{{ model.admin_url }}" class="viewlink">{% translate 'View' %}</a></td>
+              {% else %}
+                <td><a href="{{ model.admin_url }}" class="changelink">{% translate 'Change' %}</a></td>
+              {% endif %} {% endcomment %}
+            {% elif show_changelinks %}
+              <td></td>
+            {% endif %}
+          </tr>
+        {% endfor %}
+      </table>
+      <section class="status-bot">
+        <div class="status-bot-show">
+        </div>
+        <button class="status-bot-restart">
+          Restart Whatsapp Bot
+        </button>  
+      <section>
+      <script>
+          var status = "restarting";
+
+          const restartButton = document.querySelector('button[class="status-bot-restart"]');
+          const statusShow = document.querySelector('div[class="status-bot-show"]');
+
+          statusVerifier();
+
+          restartButton.addEventListener('click', (event)=> {
+            restart();
+          });
+
+          async function restart() {
+            if (status === "online" || status === "offline") {
+              const options = {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+                mode:'cors'
+              };
+
+              status = await fetch('http://localhost:3000/', options)
+                .then(response => {
+                  if (!response.ok) {
+                    return "error";
+                  }
+                  return response.text();
+                })
+                .then(data => {
+                  return data;
+                })
+                .catch(_ => {
+                  return 'error';
+                });
+              statusShow.innerHTML = `<p>${status}</p>`
+              if (status === "restarting") {
+                statusVerifier();
+              }
+            }
+          } 
+
+          function wait(interval) {
+            return new Promise(resolve => {
+              setInterval(() => {
+                resolve();
+              }, interval);
+            });
+          }
+
+          async function statusVerifier() {
+            while(status !== "online" && status !== "offline") {
+              await wait(5000);
+
+              const options = {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+                mode:'cors'
+              };
+
+              status = await fetch('http://localhost:3000/server-status/', options)
+                .then(response => {
+                  if (!response.ok) {
+                    return "offline";
+                  }
+                  return response.text();
+                })
+                .then(data => {
+                  return data;
+                })
+                .catch(_ => {
+                  return 'offline';
+                });
+              
+              if (status === "online" || status === "offline" || status === "restarting") {
+                statusShow.innerHTML = `<p>${status}</p>`
+              } else {
+                statusShow.innerHTML = `<img src="${status}" />`
+              }
+            }
+          }
+      </script>
+    </div>
+  {% endif %}
+  {% endfor %}
+{% else %}
+  <p>{% translate 'You don’t have permission to view or edit anything.' %}</p>
+{% endif %}

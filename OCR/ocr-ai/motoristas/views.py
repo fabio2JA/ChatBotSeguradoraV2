@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_exempt
+
+import json
 
 from motoristas.handlers.image import ImageHandler
 from motoristas.handlers.ocr.queue import verify_has_queue
@@ -22,9 +25,9 @@ def reconhecimento_cnh(request: HttpRequest) -> HttpResponse:
         return render(request, 'cnh.html')
     elif request.method == 'POST':
         image = ImageHandler.extract_image(request)
-        org_img = request.FILES.get('image')
+        number = request.POST.get('number')
 
-        uuid = OCRQueueHandler.add_image_queue(image, 'CN', org_img)
+        uuid = OCRQueueHandler.add_image_queue(image, 'CN', image, number)
 
         return render(request, 'cnh.html', {'uuid': uuid})
     else:
@@ -36,9 +39,9 @@ def reconhecimento_doc(request: HttpRequest) -> HttpResponse:
         return render(request, 'doc.html')
     elif request.method == 'POST':
         image = ImageHandler.extract_image(request)
-        org_img = request.FILES.get('image')
+        number = request.POST.get('number')
 
-        uuid = OCRQueueHandler.add_image_queue(image, 'DC', org_img)
+        uuid = OCRQueueHandler.add_image_queue(image, 'DC', image, number)
 
         return render(request, 'doc.html', {'uuid': uuid})
     else:
@@ -60,3 +63,33 @@ def verify_done_ocr(request: HttpRequest) -> HttpResponse:
             response = done_ocr.status
 
     return HttpResponse(response)
+
+
+@require_http_methods(['POST'])
+@csrf_exempt
+def reconhecimento_bot_cnh(request: HttpRequest) -> HttpResponse:
+    body = json.loads(request.body.decode())
+    image_base_64 = body['image']
+    image_type = body['image_type']
+    number = body['number']
+
+    image = ImageHandler.extract_base_64(image_base_64, image_type, number)
+
+    uuid = OCRQueueHandler.add_image_queue(image, 'CN', image, number)
+    
+    return HttpResponse(uuid)
+
+
+@require_http_methods(['POST'])
+@csrf_exempt
+def reconhecimento_bot_doc(request: HttpRequest) -> HttpResponse:
+    body = json.loads(request.body.decode())
+    image_base_64 = body['image']
+    image_type = body['image_type']
+    number = body['number']
+
+    image = ImageHandler.extract_base_64(image_base_64, image_type, number)
+
+    uuid = OCRQueueHandler.add_image_queue(image, 'DC', image, number)
+    
+    return HttpResponse(uuid)

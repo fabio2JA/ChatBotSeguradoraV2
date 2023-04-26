@@ -71,6 +71,8 @@ class OCRQueue(models.Model):
     image = models.ImageField(upload_to='ocrqueue/temp/')
     original_image = models.ImageField(upload_to='ocrqueue/originals/')
     image_type = models.CharField(max_length=2, choices=IMAGE_TYPE_CHOICES)
+    number = models.CharField(max_length=20)
+
 
 class DoneOCRQueue(models.Model):
     uuid = models.IntegerField(primary_key=True)
@@ -80,6 +82,7 @@ class DoneOCRQueue(models.Model):
             ('FL', 'FAILED')
         )
     )
+    number = models.CharField(max_length=20)
 
     
     def is_expired(self):

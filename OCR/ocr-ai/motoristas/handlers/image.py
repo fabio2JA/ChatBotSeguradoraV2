@@ -2,6 +2,12 @@ from django.http import HttpRequest
 from django.core.files.base import ContentFile
 from datetime import datetime
 
+from PIL import Image
+import tempfile
+from django.core.files import File
+from django.core.files.uploadedfile import SimpleUploadedFile
+
+import base64
 from io import BytesIO
 from pdf2image import convert_from_bytes
 
@@ -40,6 +46,30 @@ class ImageHandler:
         image = Images.objects.create(image=image)
         image.save()
         return image.image
+    
+    @classmethod
+    def extract_base_64(cls, image: str, type: str, number: str):
+        if type == 'jpg' or type == 'jpeg' or type == 'png':
+            image_bytes = base64.b64decode(image)
+            image_file = BytesIO(image_bytes)
+            image = Image.open(image_file)
+
+            image_name = f'{number}.{type}'  # Replace with desired file name
+            image_field = SimpleUploadedFile(image_name, image_file.getvalue())
+            image = Images.objects.create(image=image_field)
+            image.save()
+            return image.image
+        elif type == 'pdf':
+            pdf_bytes = base64.b64decode(image)
+            with tempfile.NamedTemporaryFile(delete=False) as f:
+                f.write(pdf_bytes)
+            pdf_file = File(open(f.name, 'rb'))
+            pdf_name = f'{number}.{type}'
+            pdf_field = SimpleUploadedFile(pdf_name, pdf_file.read())
+            pdf = Images.objects.create(image=pdf_field)
+            pdf.save()
+            return pdf.image
+
 
     
     @classmethod
@@ -48,12 +78,8 @@ class ImageHandler:
         if img.content_type == 'application/pdf':
             file_bytes = img.read()
 
-            # Convert PDF to list of PIL.Image objects using pdf2image
             image_list = convert_from_bytes(file_bytes)
 
-            print(image_list)
-
-            # Save each image to a BytesIO object
             image_file_list = []
             for i, image in enumerate(image_list):
                 image_file = BytesIO()
@@ -63,7 +89,6 @@ class ImageHandler:
 
             image_file = image_file_list[0]
 
-            # Create a new InMemoryUploadedFile object from the first image file
             image_data = image_file.getvalue()
             image_name = image_file.name
             image_content = ContentFile(image_data)

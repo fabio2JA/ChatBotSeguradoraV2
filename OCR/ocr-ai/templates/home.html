@@ -10,32 +10,28 @@
     <link rel="stylesheet" type="text/css" href="{% static 'styles/home-style.css' %}">
 </head>
 <body>
-    <main>
-        <h1>Sistema...</h1>
-        <section>
-            <header>
-                <h2>Administração</h2>
-            </header>
-            <div>
-                <a href="{% url 'admin:index' %}">Painel de controle</a>
-                <p>Ver, Alterar, Excluir</p>
-                <p>CNHS e Documentos</p>
-            </div>
+    <header class="apresentation">
+        <h1 class="apresentation__title">Sistema de reconhecimento de documentos</h1>
+        <img class="apresentation__img" src="{% static 'images/logo.jpg' %}"/>
+    </header>
+    <main class="dash">
+        <header class="dash__header">
+            <h2 class="dash_title">Reconhecimento de documento</h2>
+        </header>
+        <section class="dash__cnh">
+            <a href="{% url 'reconhecimento_cnh_view' %}">CNH</a>
+            <p>Reconhecimento por foto das informaçoes da cnh</p>
         </section>
-        <section>
-            <header>
-                <h2>Reconhecimento de documento</h2>
-            </header>
-            <div>
-                <a href="{% url 'reconhecimento_cnh_view' %}">CNH</a>
-                <p>Reconhecimento por foto das informaçoes da cnh</p>
-            </div>
-            <div>
-                <a href="{% url 'reconhecimento_doc_view' %}">Documento do Carro</a>
-                <p>Reconhecimento por foto das informaçoes da cnh</p>
-            </div>
-
+        <section class="dash__doc">
+            <a href="{% url 'reconhecimento_doc_view' %}">Documento do Carro</a>
+            <p>Reconhecimento por foto das informaçoes do documento</p>
         </section>
     </main>
+    <footer class="admin">
+        <h2 class="admin__title">Administração</h2>
+        <div class="admin__botao">
+            <a href="{% url 'admin:index' %}">Painel de controle</a>
+        </div>
+    </footer>
 </body>
 </html>

@@ -1,4 +1,5 @@
 {% load static %}
+{% csrf_token %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,16 +17,16 @@
         </section>
         <section class='reconhecimento--div'>
             <h1>Reconhecimento de Documento</h1>
-            <form method="post" action="{% url 'reconhecimento_doc_view' %}"
-                enctype="multipart/form-data">
+            <form method="POST" action="{% url 'reconhecimento_doc_view' %}" enctype="multipart/form-data">
                 {% csrf_token %}
-                <input type="file" name="image"/>
-                <input type="submit" value="Escanear">
+                <input type="file" name="image" required id="file"/>
+                <input type="text" name="number" placeholder="numero de celular com DDD" required id="number"/>
+                <input type="submit" value="Escanear" id="scan">
             </form>
             {% if uuid %}
-                <section>
+                <section class='status'>
                     <div id='status-image'>
-                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin: auto; display: block; shape-rendering: auto;" width="244px" height="244px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin: auto; display: block; shape-rendering: auto;" width="40px" height="40px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
                             <g transform="translate(28.666666666666664,28.666666666666664)">
                               <rect x="-14" y="-14" width="28" height="28" fill="#17232d">
                                 <animateTransform attributeName="transform" type="scale" repeatCount="indefinite" dur="1.8518518518518516s" keyTimes="0;1" values="1.35;1" begin="-0.5555555555555555s"></animateTransform>

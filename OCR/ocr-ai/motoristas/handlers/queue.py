@@ -5,13 +5,14 @@ from django.db.models import Q
 
 class OCRQueueHandler:
     @classmethod
-    def add_image_queue(cls, image, image_type: str, org_img) -> int:
+    def add_image_queue(cls, image, image_type: str, org_img, number: str = '.') -> int:
         original_image = org_img
 
         queue = OCRQueue.objects.create(
             image=image, 
-            image_type=image_type, 
-            original_image=original_image
+            image_type=image_type,
+            original_image=original_image,
+            number=number
         )
         is_doing_schedule = OCRQueue.objects.filter(~Q(pk=queue.pk))
         
