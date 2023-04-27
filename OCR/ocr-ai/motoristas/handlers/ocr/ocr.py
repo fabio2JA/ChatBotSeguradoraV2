@@ -7,7 +7,7 @@ from django.conf import settings
 
 LETRAS_CORR = 'abcedfghijklmnopqrstuvwxyzáâàãéêèíîìóôòõúûùç123456789'
 REPLACE_CHARS = " /°.'ª;,"
-OCR = PaddleOCR(lang='pt', use_angle_cls=True, det_model_dir=os.path.join(settings.BASE_DIR, "det_db"))
+OCR = PaddleOCR(lang='pt', use_angle_cls=True, det_model_dir=os.path.join(settings.BASE_DIR, "det_db"), det_db_thresh=0.8, det_east_score_thresh=0.8)
 
 
 class TextCorrector:

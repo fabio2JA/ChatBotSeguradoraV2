@@ -5,7 +5,7 @@ from motoristas.constants import IMAGE_TYPE_CHOICES
 
 
 class CNH(models.Model):
-    numero_cel = models.CharField(max_length=20)
+    numero_cel = models.CharField(max_length=25)
     image = models.ImageField()
     cpf = models.CharField(max_length=14, null=False, blank=False, primary_key=True)
     nome = models.CharField(max_length=255, blank=True, null=True)
@@ -25,7 +25,7 @@ class CNH(models.Model):
 
 
 class DOCCarro(models.Model):
-    numero_cel = models.CharField(max_length=20)
+    numero_cel = models.CharField(max_length=25)
     image = models.ImageField()
     cpf_ou_cnpj = models.CharField(max_length=20, blank=True, null=True)
     nome = models.CharField(max_length=255, blank=True, null=True)

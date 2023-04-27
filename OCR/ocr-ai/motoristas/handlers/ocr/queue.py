@@ -24,7 +24,6 @@ def verify_has_queue():
         thread.start()
 
 def do_queue(queue: OCRQueue):
-
     done_ocr = DoneOCRQueue.objects.create(
         uuid=queue.pk, 
         status='FL', 
@@ -107,7 +106,7 @@ def do_ocr(queue: OCRQueue) -> dict:
     
 def save_ocr_on_db(extracted_info: dict, image_type: str, done_ocr: DoneOCRQueue):
     extracted_info = ImageHandler.handle_extract_infos_request(extracted_info.items())
-    extracted_info['numero_cel'] = done_ocr['number']
+    extracted_info['numero_cel'] = done_ocr.number
     if image_type == 'CN':
         cnh = CNH.objects.create(**extracted_info)
         cnh.save()

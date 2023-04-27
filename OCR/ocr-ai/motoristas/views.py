@@ -83,6 +83,7 @@ def reconhecimento_bot_cnh(request: HttpRequest) -> HttpResponse:
 @require_http_methods(['POST'])
 @csrf_exempt
 def reconhecimento_bot_doc(request: HttpRequest) -> HttpResponse:
+    print(request.FILES)
     body = json.loads(request.body.decode())
     image_base_64 = body['image']
     image_type = body['image_type']
