@@ -62,10 +62,10 @@ async function restartService(res) {
                 logConsole: false,
                 popup: true,
                 qrTimeout: 0,
-                deleteSessionDataOnLogout: true,
-                killClientOnLogout: true,
-                useChrome: true,
-                multiDevice: false
+                // deleteSessionDataOnLogout: true,
+                // killClientOnLogout: true,
+                // useChrome: true,
+                // multiDevice: false
             }).then(client => start(client));
         } catch (e) {
             global.serverStatus = 'offline';
@@ -89,6 +89,7 @@ function start(client) {
 }
 
 async function exit() {
-    await global.client.logout();
+    // await global.client.logout();
+    await global.client.kill();
     global.client = null;
 }

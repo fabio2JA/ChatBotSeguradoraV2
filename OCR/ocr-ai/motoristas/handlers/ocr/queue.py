@@ -1,3 +1,4 @@
+import time
 import cv2
 import threading
 
@@ -23,15 +24,12 @@ def verify_has_queue():
         thread.start()
 
 def do_queue(queue: OCRQueue):
+
     done_ocr = DoneOCRQueue.objects.create(
         uuid=queue.pk, 
         status='FL', 
         number=queue.number
     )
-
-    send_status_ocr(done_ocr.status, done_ocr.number)
-
-    verify_has_queue()
     
     try:
         extracted_infos = do_ocr(queue)
@@ -45,6 +43,8 @@ def do_queue(queue: OCRQueue):
 
         done_ocr.date_time = timezone.now()
         done_ocr.save()
+
+        send_status_ocr(done_ocr.status, done_ocr.number)
 
         verify_has_queue()
 
@@ -107,6 +107,7 @@ def do_ocr(queue: OCRQueue) -> dict:
     
 def save_ocr_on_db(extracted_info: dict, image_type: str, done_ocr: DoneOCRQueue):
     extracted_info = ImageHandler.handle_extract_infos_request(extracted_info.items())
+    extracted_info['numero_cel'] = done_ocr['number']
     if image_type == 'CN':
         cnh = CNH.objects.create(**extracted_info)
         cnh.save()
@@ -118,7 +119,7 @@ def save_ocr_on_db(extracted_info: dict, image_type: str, done_ocr: DoneOCRQueue
 
 
 def send_status_ocr(status: str, number: str):
-    url = 'http://localhost:3000/status/'
+    url = 'https://f-jacks-orange-space-funicular-ww5p7wvqxwrh955p-3000.preview.app.github.dev/status/'
 
     data = {
         'status': status,

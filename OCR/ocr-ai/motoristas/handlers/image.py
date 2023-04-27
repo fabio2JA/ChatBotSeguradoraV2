@@ -61,12 +61,21 @@ class ImageHandler:
             return image.image
         elif type == 'pdf':
             pdf_bytes = base64.b64decode(image)
-            with tempfile.NamedTemporaryFile(delete=False) as f:
-                f.write(pdf_bytes)
-            pdf_file = File(open(f.name, 'rb'))
-            pdf_name = f'{number}.{type}'
-            pdf_field = SimpleUploadedFile(pdf_name, pdf_file.read())
-            pdf = Images.objects.create(image=pdf_field)
+            # Convert the PDF bytes to a PIL Image object
+            pdf_image = convert_from_bytes(pdf_bytes)[0]
+            # Create a temporary file to store the JPEG image
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as tmp:
+                # Save the JPEG image to the temporary file
+                pdf_image.save(tmp.name, 'JPEG')
+                # Read the contents of the temporary file
+                with open(tmp.name, 'rb') as f:
+                    jpg_bytes = f.read()
+            # Encode the JPEG byte stream as base64
+            jpg_base64 = base64.b64encode(jpg_bytes)
+            
+            image = cls.extract_base_64(jpg_base64, 'jpg', number)
+
+            pdf = Images.objects.create(image=image)
             pdf.save()
             return pdf.image
 

@@ -19,13 +19,13 @@ async function enviarDOC(message, client) {
 }
 
 async function enviarImagemCNH(message, client) {
-    const url = 'https://127.0.0.1:8000/reconhecimento/cnh/bot/'
+    const url = 'https://f-jacks-orange-space-funicular-ww5p7wvqxwrh955p-8000.preview.app.github.dev/reconhecimento/cnh/bot/'
     await enviarImagem(message, client, url, BOT_MESSAGES_KEYS[2]);
 
 }
 
 async function enviarImagemDOC(message, client) {
-    const url = 'https://127.0.0.1:8000/reconhecimento/doc/bot/'
+    const url = 'https://f-jacks-orange-space-funicular-ww5p7wvqxwrh955p-8000.preview.app.github.dev/reconhecimento/doc/bot/'
     await enviarImagem(message, client, url, BOT_MESSAGES_KEYS[3]);
 }
 
@@ -39,7 +39,7 @@ async function enviarImagem(message, client, url, nextMessage) {
     const imageData = await decryptMedia(message);
 
     const data = {
-        number: message.from.slice('@')[0],
+        number: message.from,
         image: imageData.toString('base64'),
         image_type: mime.extension(message.mimetype)
     }
@@ -100,6 +100,11 @@ const BOT_MESSAGES = {
 
 const BOT_MESSAGES_KEYS = Object.keys(BOT_MESSAGES);
 
+const STATUS_REQS = [
+    'Status da solicitação de reconhecimento:\n\nFALHA\n\nPor favor tente enviar um arquivo melhor ou contacte o nosso suporte',
+    'Status da solicitação de reconhecimento:\n\nSUCESSO\n\nSeu documento foi reconhecido com sucesso e ja consta no nosso banco de dados'
+]
+
 export default async function messageHandler(message, client) {
     let activator;
 
@@ -132,3 +137,5 @@ export default async function messageHandler(message, client) {
         await BOT_MESSAGES[myLastMessage][activator](message, client);
     }
 }
+
+export { STATUS_REQS }

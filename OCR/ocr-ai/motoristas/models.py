@@ -3,7 +3,9 @@ from django.utils import timezone
 
 from motoristas.constants import IMAGE_TYPE_CHOICES
 
+
 class CNH(models.Model):
+    numero_cel = models.CharField(max_length=20)
     image = models.ImageField()
     cpf = models.CharField(max_length=14, null=False, blank=False, primary_key=True)
     nome = models.CharField(max_length=255, blank=True, null=True)
@@ -21,7 +23,9 @@ class CNH(models.Model):
     def __str__(self):
         return f'{self.nome} - {self.cpf}'
 
+
 class DOCCarro(models.Model):
+    numero_cel = models.CharField(max_length=20)
     image = models.ImageField()
     cpf_ou_cnpj = models.CharField(max_length=20, blank=True, null=True)
     nome = models.CharField(max_length=255, blank=True, null=True)
@@ -75,7 +79,7 @@ class OCRQueue(models.Model):
 
 
 class DoneOCRQueue(models.Model):
-    uuid = models.IntegerField(primary_key=True)
+    uuid = models.IntegerField()
     date_time = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=2, choices=(
             ('SC', 'SUCESS'),

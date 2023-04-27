@@ -12,7 +12,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = [
-    'https://f-jackson-cuddly-zebra-4p9v5vjvw6q3g4x-8000.preview.app.github.dev',
+    'https://f-jacks-orange-space-funicular-ww5p7wvqxwrh955p-8000.preview.app.github.dev',
     'http://localhost:8000',
     'http://127.0.0.1:8000'
 ]
