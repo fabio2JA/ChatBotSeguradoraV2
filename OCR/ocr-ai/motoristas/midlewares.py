@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login
+import cv2
 
 class AutoLoginMiddleware:
     def __init__(self, get_response):
@@ -11,4 +12,12 @@ class AutoLoginMiddleware:
                 login(request, user)
         response = self.get_response(request)
         return response
+
+def encrypt_middleware(img_path, crypt_code):
+    img = cv2.imread(img_path)
+
+    pass
+
+def decrypt_middleware(img):
+    pass
     
