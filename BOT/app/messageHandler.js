@@ -40,7 +40,7 @@ async function enviarImagem(message, client, url, nextMessage) {
 
     const filename = `./images/${message.from}%${message.t}.${mime.extension(message.mimetype)}`;
     const mediaData = await decryptMedia(message);
-    
+
     fs.writeFile(filename, mediaData, function(err) {
         if (err) {
           console.log(err);
@@ -64,6 +64,14 @@ async function enviarImagem(message, client, url, nextMessage) {
         console.log(response);
     }).catch(error => {
         console.log(error);
+    });
+
+    fs.unlink(filename, (err) => {
+        if (err) {
+          console.error(err);
+        }
+        
+        console.log('File deleted successfully!');
     });
 }
 
