@@ -61,7 +61,7 @@ async function enviarImagem(message, client, url, nextMessage) {
             'Content-Type': 'multipart/form-data'
         }
     }).then(response => {
-        console.log(response);
+        console.log(response.data);
     }).catch(error => {
         console.log(error);
     });
