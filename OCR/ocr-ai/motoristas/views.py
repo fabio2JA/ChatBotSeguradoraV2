@@ -68,13 +68,9 @@ def verify_done_ocr(request: HttpRequest) -> HttpResponse:
 @require_http_methods(['POST'])
 @csrf_exempt
 def reconhecimento_bot_cnh(request: HttpRequest) -> HttpResponse:
-    print(request.POST)
-    body = json.loads(request.body.decode())
-    image_base_64 = body['image']
-    image_type = body['image_type']
-    number = body['number']
-
-    image = ImageHandler.extract_base_64(image_base_64, image_type, number)
+    image = request.POST.get('image')
+    image_type = request.POST.get('image_type')
+    number = request.POST.get('number')
 
     uuid = OCRQueueHandler.add_image_queue(image, 'CN', image, number)
     
@@ -84,12 +80,9 @@ def reconhecimento_bot_cnh(request: HttpRequest) -> HttpResponse:
 @require_http_methods(['POST'])
 @csrf_exempt
 def reconhecimento_bot_doc(request: HttpRequest) -> HttpResponse:
-    body = json.loads(request.body.decode())
-    image_base_64 = body['image']
-    image_type = body['image_type']
-    number = body['number']
-
-    image = ImageHandler.extract_base_64(image_base_64, image_type, number)
+    image = request.POST.get('image')
+    image_type = request.POST.get('image_type')
+    number = request.POST.get('number')
 
     uuid = OCRQueueHandler.add_image_queue(image, 'DC', image, number)
     

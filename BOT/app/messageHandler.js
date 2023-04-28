@@ -60,11 +60,7 @@ async function enviarImagem(message, client, url, nextMessage) {
         headers: {
             'Content-Type': 'multipart/form-data'
         }
-    }).then(response => {
-        console.log(response.data);
-    }).catch(error => {
-        console.log(error);
-    });
+    })
 
     fs.unlink(filename, (err) => {
         if (err) {
