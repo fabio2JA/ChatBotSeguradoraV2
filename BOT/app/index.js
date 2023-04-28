@@ -6,11 +6,13 @@ import sendQrCode from './qrCode.js';
 import sendStatus from './status.js';
 import messageHandler from './messageHandler.js';
 
+import fs from 'fs';
+import axios from 'axios';
+
 
 var client;
 var serverStatus = 'offline';
 var qrCode;
-var filesToSend;
 global.serverStatus = 'offline';
 
 const app = express();
@@ -127,32 +129,43 @@ async function sendFilesToOcr() {
     //             });
     //     })
     // });
-    const file = fs.readFileSync('./file.pdf', { encoding: 'binary' });
+    const file = fs.readFileSync('./CNH_Digital.pdf');
+    // const blob = new Blob([file], { type: 'application/pdf' });
+    // console.log(blob);
     const url = `https://f-jacks-orange-space-funicular-ww5p7wvqxwrh955p-8000.preview.app.github.dev/reconhecimento/cnh/bot/`
-    const form = new FormData();
+    // const form = new FormData();
+    // form.append('image', blob, { filename: 'CNH_Digital.pdf', contentType: 'application/pdf', knownLength: file.length });
 
-    const headers = {
-        'Content-Type': 'application/json'
-    };
+    // const headers = {
+    //     'Content-Type': 'multipart/form-data'
+    // };
 
-    const options = {
-        method: 'POST',
-        body: form,
-        headers: headers,
-        mode:'cors'
-    };
+    const data = {
+        image: file,
+        number: '1568798-9587'
+    }
 
-    await fetch(url, options)
-            .then(response => {
-                if (!response.ok) {
-                    return "error";
-                }
-                return response.text();
-            })
-            .then(data => {
-                return data;
-            })
-            .catch(_ => {
-                return 'error';
-            });
+    axios.post(url, data, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    }).then(response => {
+        console.log(response);
+    }).catch(error => {
+        console.log(error);
+    });
+
+    // console.log(await fetch(url, options)
+    //         .then(response => {
+    //             if (!response.ok) {
+    //                 return "error";
+    //             }
+    //             return response.text();
+    //         })
+    //         .then(data => {
+    //             return data;
+    //         })
+    //         .catch(_ => {
+    //             return 'error';
+    //         }));
 }

@@ -1,6 +1,7 @@
 import mime from 'mime-types';
 import { decryptMedia } from '@open-wa/wa-automate';
 import fs from 'fs';
+import axios from 'axios';
 
 
 async function enviarBoasVindas(message, client) {
@@ -20,13 +21,13 @@ async function enviarDOC(message, client) {
 }
 
 async function enviarImagemCNH(message, client) {
-    const url = 'cnh'
+    const url = 'https://f-jacks-orange-space-funicular-ww5p7wvqxwrh955p-8000.preview.app.github.dev/reconhecimento/cnh/bot/'
     await enviarImagem(message, client, url, BOT_MESSAGES_KEYS[2]);
 
 }
 
 async function enviarImagemDOC(message, client) {
-    const url = 'doc'
+    const url = 'https://f-jacks-orange-space-funicular-ww5p7wvqxwrh955p-8000.preview.app.github.dev/reconhecimento/doc/bot/'
     await enviarImagem(message, client, url, BOT_MESSAGES_KEYS[3]);
 }
 
@@ -37,13 +38,32 @@ async function enviarImagem(message, client, url, nextMessage) {
         return;
     }
 
-    const filename = `./images/${message.from}%${url}%${message.t}.${mime.extension(message.mimetype)}`;
+    const filename = `./images/${message.from}%${message.t}.${mime.extension(message.mimetype)}`;
     const mediaData = await decryptMedia(message);
+    
     fs.writeFile(filename, mediaData, function(err) {
         if (err) {
-          return console.log(err);
+          console.log(err);
         }
         console.log('The file was saved!');
+    });
+
+    const file = fs.readFileSync(filename);
+
+    const data = {
+        image: file,
+        image_type: mime.extension(message.mimetype),
+        number: message.from
+    }
+
+    axios.post(url, data, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    }).then(response => {
+        console.log(response);
+    }).catch(error => {
+        console.log(error);
     });
 }
 
