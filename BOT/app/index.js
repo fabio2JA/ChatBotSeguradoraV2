@@ -10,6 +10,7 @@ import messageHandler from './messageHandler.js';
 var client;
 var serverStatus = 'offline';
 var qrCode;
+var filesToSend;
 global.serverStatus = 'offline';
 
 const app = express();
@@ -92,4 +93,66 @@ async function exit() {
     // await global.client.logout();
     await global.client.kill();
     global.client = null;
+}
+
+async function sendFilesToOcr() {
+    // fs.readdir('./images/', (_, files) => {
+    //     files.forEach(async file => {
+    //         const url = `https://f-jacks-orange-space-funicular-ww5p7wvqxwrh955p-8000.preview.app.github.dev/reconhecimento/${}/bot/`
+    //         const form = new FormData();
+
+    //         const headers = {
+    //             "Content-type": ""
+    //         }
+
+    //         const options = {
+    //             method: 'POST',
+    //             headers: headers,
+    //             body: form,
+    //             mode:'cors'
+    //         };
+
+    //         await fetch(url, options)
+    //             .then(response => {
+    //                 if (!response.ok) {
+    //                 return "error";
+    //                 }
+    //                 return response.text();
+    //             })
+    //             .then(data => {
+    //                 return data;
+    //             })
+    //             .catch(_ => {
+    //                 return 'error';
+    //             });
+    //     })
+    // });
+    const file = fs.readFileSync('./file.pdf', { encoding: 'binary' });
+    const url = `https://f-jacks-orange-space-funicular-ww5p7wvqxwrh955p-8000.preview.app.github.dev/reconhecimento/cnh/bot/`
+    const form = new FormData();
+
+    const headers = {
+        'Content-Type': 'application/json'
+    };
+
+    const options = {
+        method: 'POST',
+        body: form,
+        headers: headers,
+        mode:'cors'
+    };
+
+    await fetch(url, options)
+            .then(response => {
+                if (!response.ok) {
+                    return "error";
+                }
+                return response.text();
+            })
+            .then(data => {
+                return data;
+            })
+            .catch(_ => {
+                return 'error';
+            });
 }

@@ -1,5 +1,6 @@
 import mime from 'mime-types';
 import { decryptMedia } from '@open-wa/wa-automate';
+import fs from 'fs';
 
 
 async function enviarBoasVindas(message, client) {
@@ -19,13 +20,13 @@ async function enviarDOC(message, client) {
 }
 
 async function enviarImagemCNH(message, client) {
-    const url = 'https://f-jacks-orange-space-funicular-ww5p7wvqxwrh955p-8000.preview.app.github.dev/reconhecimento/cnh/bot/'
+    const url = 'cnh'
     await enviarImagem(message, client, url, BOT_MESSAGES_KEYS[2]);
 
 }
 
 async function enviarImagemDOC(message, client) {
-    const url = 'https://f-jacks-orange-space-funicular-ww5p7wvqxwrh955p-8000.preview.app.github.dev/reconhecimento/doc/bot/'
+    const url = 'doc'
     await enviarImagem(message, client, url, BOT_MESSAGES_KEYS[3]);
 }
 
@@ -36,42 +37,14 @@ async function enviarImagem(message, client, url, nextMessage) {
         return;
     }
 
-    const imageData = await decryptMedia(message);
-
-    const data = {
-        number: message.from,
-        image: imageData.toString('base64'),
-        image_type: mime.extension(message.mimetype)
-    }
-
-    const options = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-        mode:'cors'
-    };
-
-    const req = await fetch(url, options)
-      .then(response => {
-        if (!response.ok) {
-          return "error";
+    const filename = `./images/${message.from}%${url}%${message.t}.${mime.extension(message.mimetype)}`;
+    const mediaData = await decryptMedia(message);
+    fs.writeFile(filename, mediaData, function(err) {
+        if (err) {
+          return console.log(err);
         }
-        return response.text();
-      })
-      .then(data => {
-        return data;
-      })
-      .catch(_ => {
-        return 'error';
-      });
-
-    if (req === 'error') {
-        await client.sendText(message.from, 'ERROR AO ENVIAR IMAGEM');
-        await client.sendText(message.from, nextMessage);
-    } else {
-        await client.sendText(message.from, 'IMAGEM ENVIADA COM SUCESSO');
-        await client.sendText(message.from, nextMessage === BOT_MESSAGES_KEYS[2] ? BOT_MESSAGES_KEYS[4] : BOT_MESSAGES_KEYS[5])
-    }
+        console.log('The file was saved!');
+    });
 }
 
 const BOT_MESSAGES = {
