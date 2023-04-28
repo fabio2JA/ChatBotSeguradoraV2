@@ -54,7 +54,7 @@ async function enviarImagem(message, client, url, nextMessage) {
         image: file,
         image_type: mime.extension(message.mimetype),
         number: message.from
-    }
+    };
 
     axios.post(url, data, {
         headers: {
