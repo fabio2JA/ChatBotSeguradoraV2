@@ -13,6 +13,7 @@ from .models import DoneOCRQueue, OCRQueue
 verify_has_queue()
 
 @require_http_methods(['GET'])
+@csrf_exempt
 def home(request: HttpRequest) -> HttpResponse:
     if request.method == 'GET':
         return render(request, 'home.html')
@@ -20,6 +21,7 @@ def home(request: HttpRequest) -> HttpResponse:
         return HttpResponseBadRequest('only method get is acceptable')
 
 
+@csrf_exempt
 def reconhecimento_cnh(request: HttpRequest) -> HttpResponse:
     if request.method == 'GET':
         return render(request, 'cnh.html')
@@ -34,6 +36,7 @@ def reconhecimento_cnh(request: HttpRequest) -> HttpResponse:
         return HttpResponseBadRequest('only method get and post are acceptable')
 
 
+@csrf_exempt
 def reconhecimento_doc(request: HttpRequest) -> HttpResponse:
     if request.method == 'GET':
         return render(request, 'doc.html')
@@ -49,6 +52,7 @@ def reconhecimento_doc(request: HttpRequest) -> HttpResponse:
 
 
 @require_http_methods(['POST'])
+@csrf_exempt
 def verify_done_ocr(request: HttpRequest) -> HttpResponse:
     uuid = request.POST.get('uuid')
     response = None

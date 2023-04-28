@@ -11,11 +11,11 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = [
-    'https://f-jacks-orange-space-funicular-ww5p7wvqxwrh955p-8000.preview.app.github.dev',
-    'http://localhost:8000',
-    'http://127.0.0.1:8000'
-]
+# CSRF_TRUSTED_ORIGINS = [
+#     'https://f-jacks-orange-space-funicular-ww5p7wvqxwrh955p-8000.preview.app.github.dev',
+#     'http://localhost:8000',
+#     'http://127.0.0.1:8000'
+# ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -31,15 +31,16 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
+    # 'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'motoristas.midlewares.AutoLoginMiddleware'
+    'motoristas.midlewares.AutoLoginMiddleware',
+    'motoristas.midlewares.DisableCsrfCheck'
 ]
 
 ROOT_URLCONF = 'setup.urls'

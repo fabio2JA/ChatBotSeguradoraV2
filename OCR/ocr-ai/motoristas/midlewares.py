@@ -1,4 +1,6 @@
 from django.contrib.auth import authenticate, login
+from django.utils.deprecation import MiddlewareMixin
+from django.conf import settings
 import cv2
 
 class AutoLoginMiddleware:
@@ -13,11 +15,10 @@ class AutoLoginMiddleware:
         response = self.get_response(request)
         return response
 
-def encrypt_middleware(img_path, crypt_code):
-    img = cv2.imread(img_path)
+class DisableCsrfCheck(MiddlewareMixin):
 
-    pass
-
-def decrypt_middleware(img):
-    pass
+    def process_request(self, req):
+        attr = '_dont_enforce_csrf_checks'
+        if not getattr(req, attr, False):
+            setattr(req, attr, True)
     
